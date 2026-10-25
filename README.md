@@ -33,4 +33,5 @@ Each stage has its own folder with a `docs/` subfolder for the lessons and the c
 |---|---|---|
 | 2026-10-25 | Stage 0 | Created the repo and plan; verified Node v26 and Docker 29 |
 | 2026-10-25 | Stage 1, lesson 1 | Elasticsearch: index, document, search; exercise done ✅ |
-| 2026-10-25 | Stage 1, lesson 2 | Kibana: data view, Discover, KQL, Dev Tools |
+| 2026-10-25 | Stage 1, lesson 2 | Kibana: data view, Discover, KQL, Dev Tools ✅ |
+| 2026-10-25 | Stage 1, lesson 3 | NestJS + pino structured logs shipped to Elasticsearch |
