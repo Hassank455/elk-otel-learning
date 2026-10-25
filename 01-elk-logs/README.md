@@ -1,9 +1,9 @@
-# المرحلة 1: أساسيات ELK مع Logs
+# Stage 1: ELK basics with logs
 
-| الدرس | الملف | الحالة |
+| Lesson | File | Status |
 |---|---|---|
-| 1. Elasticsearch | [docs/01-elasticsearch.md](docs/01-elasticsearch.md) | ⏳ |
-| 2. Kibana | قريباً | |
-| 3. تطبيق NestJS يرسل structured logs | قريباً | |
-| 4. Logstash | قريباً | |
-| 5. البحث في Kibana وأول dashboard | قريباً | |
+| 1. Elasticsearch | [docs/01-elasticsearch.md](docs/01-elasticsearch.md) | 🚧 |
+| 2. Kibana | coming soon | |
+| 3. NestJS app sending structured logs | coming soon | |
+| 4. Logstash | coming soon | |
+| 5. Searching in Kibana and a first dashboard | coming soon | |

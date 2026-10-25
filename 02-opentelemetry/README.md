@@ -1,3 +1,3 @@
 # 02-opentelemetry
 
-قريباً.
+Coming soon.

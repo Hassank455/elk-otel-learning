@@ -1,43 +1,43 @@
-# الدرس 1: Elasticsearch
+# Lesson 1: Elasticsearch
 
-## المصطلحات
+## Terms
 
-| المصطلح | المعنى | المثال |
+| Term | Meaning | Example |
 |---|---|---|
-| **Elasticsearch** | قاعدة بيانات مخصصة للبحث السريع في كميات كبيرة من النصوص والـ JSON | تخزين ملايين الـ logs والبحث فيها خلال أجزاء من الثانية |
-| **Document** | سجل واحد بصيغة JSON (مثل الصف في SQL) | `{"level":"error","message":"payment failed"}` |
-| **Index** | مجموعة من الـ documents المتشابهة (مثل الجدول في SQL) | `app-logs` |
-| **Node / Cluster** | الـ node سيرفر واحد يشغل Elasticsearch، والـ cluster مجموعة nodes | نحن نستخدم node واحد (`single-node`) |
-| **REST API** | نتعامل مع Elasticsearch بطلبات HTTP عادية | `GET /app-logs/_search` |
+| **Elasticsearch** | A database built for fast search over large amounts of text and JSON | Storing millions of logs and searching them in milliseconds |
+| **Document** | A single JSON record (like a row in SQL) | `{"level":"error","message":"payment failed"}` |
+| **Index** | A collection of similar documents (like a table in SQL) | `app-logs` |
+| **Node / Cluster** | A node is one server running Elasticsearch; a cluster is a group of nodes | We use a single node (`single-node`) |
+| **REST API** | You talk to Elasticsearch with plain HTTP requests | `GET /app-logs/_search` |
 
-**لماذا Elasticsearch للـ logs؟** لأن الـ logs كثيرة جداً، ونحتاج أن نبحث فيها بالنص ("كل الأخطاء التي فيها كلمة payment في آخر ساعة"). قواعد البيانات العادية بطيئة في هذا النوع من البحث.
+**Why Elasticsearch for logs?** Logs are huge in volume, and we need full-text search over them ("all errors mentioning payment in the last hour"). Regular databases are slow at this kind of search.
 
-**مقارنة مع SQL:**
+**Compared to SQL:**
 
 ```
 SQL:            Database -> Table  -> Row
 Elasticsearch:  Cluster  -> Index  -> Document
 ```
 
-## الكود
+## Code
 
-### 1. شغل Elasticsearch
+### 1. Start Elasticsearch
 
 ```bash
 cd 01-elk-logs
 docker compose up -d
-docker compose ps        # انتظر حتى تصبح الحالة healthy (حوالي 30 ثانية)
+docker compose ps        # wait until the status is healthy (about 30 seconds)
 ```
 
-### 2. تأكد أنه يعمل
+### 2. Check that it is running
 
 ```bash
 curl http://localhost:9200
 ```
 
-النتيجة: JSON فيه `"tagline" : "You Know, for Search"`.
+You should get JSON containing `"tagline" : "You Know, for Search"`.
 
-### 3. أضف أول document
+### 3. Add your first documents
 
 ```bash
 curl -X POST http://localhost:9200/app-logs/_doc \
@@ -49,40 +49,40 @@ curl -X POST http://localhost:9200/app-logs/_doc \
   -d '{"@timestamp":"2026-10-25T10:01:00Z","level":"error","service":"payments","message":"payment failed: card declined"}'
 ```
 
-لاحظ أننا لم ننشئ الـ index `app-logs` مسبقاً. Elasticsearch أنشأه تلقائياً مع أول document.
+Notice that we never created the `app-logs` index. Elasticsearch created it automatically with the first document.
 
-### 4. ابحث
+### 4. Search
 
 ```bash
-# كل الـ documents
+# All documents
 curl "http://localhost:9200/app-logs/_search?pretty"
 
-# فقط الأخطاء
+# Errors only
 curl -X GET "http://localhost:9200/app-logs/_search?pretty" \
   -H 'Content-Type: application/json' \
   -d '{"query":{"match":{"level":"error"}}}'
 
-# بحث نصي: أي log فيه كلمة "payment"
+# Full-text search: any log containing "payment"
 curl "http://localhost:9200/app-logs/_search?q=message:payment&pretty"
 ```
 
-### 5. شاهد الـ mapping
+### 5. Look at the mapping
 
 ```bash
 curl "http://localhost:9200/app-logs/_mapping?pretty"
 ```
 
-**Mapping** يعني نوع كل حقل (`text` أو `keyword` أو `date`...). Elasticsearch خمنه تلقائياً، وسنتعلم لاحقاً كيف نحدده بأنفسنا.
+A **mapping** is the type of each field (`text`, `keyword`, `date`, ...). Elasticsearch guessed it automatically; later we will learn to define it ourselves.
 
-## تمرين
+## Exercise
 
-1. أضف 3 logs جديدة من service اسمها `users`.
-2. ابحث عن كل الـ logs التابعة لـ `users`.
-3. احذف الـ index بالكامل: `curl -X DELETE http://localhost:9200/app-logs`
+1. Add 3 new logs from a service called `users`.
+2. Search for all logs that belong to `users`.
+3. Delete the whole index: `curl -X DELETE http://localhost:9200/app-logs`
 
-## إيقاف التشغيل
+## Stopping
 
 ```bash
-docker compose down        # يوقف الـ containers ويحتفظ بالبيانات
-docker compose down -v     # يوقف ويحذف البيانات أيضاً
+docker compose down        # stop the containers, keep the data
+docker compose down -v     # stop and delete the data too
 ```

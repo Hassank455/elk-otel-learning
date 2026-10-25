@@ -1,34 +1,34 @@
-# المرحلة 0: تجهيز المشروع ومفاهيم أساسية
+# Stage 0: Project setup and core concepts
 
-## 1. Observability (قابلية المراقبة)
+## 1. Observability
 
-**المصطلح:** Observability
+**Term:** Observability
 
-**المعنى:** قدرتك على فهم ما يحدث داخل النظام من الخارج، فقط من البيانات التي يرسلها، بدون أن تفتح الكود أو تضيف `console.log` جديد كل مرة.
+**Meaning:** The ability to understand what is happening inside a system from the outside, using only the data it emits, without opening the code or adding a new `console.log` every time.
 
-**المثال:** المستخدم يقول "الدفع بطيء". بدون observability تخمن السبب. معها تفتح Kibana وترى أن طلب `/payments` أخذ 4 ثوانٍ، منها 3.5 ثانية في استعلام قاعدة البيانات.
+**Example:** A user says "checkout is slow". Without observability you guess. With it, you open Kibana and see that the `/payments` request took 4 seconds, 3.5 of which were spent in a database query.
 
-## 2. الأعمدة الثلاثة (Three Pillars)
+## 2. The three pillars
 
-| المصطلح | المعنى | مثال |
+| Term | Meaning | Example |
 |---|---|---|
-| **Logs** | سطر نصي أو JSON يصف حدثاً حصل في وقت معين | `{"level":"error","msg":"payment failed","userId":42}` |
-| **Metrics** | أرقام تُقاس على مدى الوقت | عدد الطلبات في الثانية، استهلاك الذاكرة |
-| **Traces** | رحلة طلب واحد عبر كل الخدمات، مقسمة إلى spans | طلب `/checkout` مر على `orders` ثم `payments` ثم قاعدة البيانات |
+| **Logs** | A text or JSON line describing an event that happened at a point in time | `{"level":"error","msg":"payment failed","userId":42}` |
+| **Metrics** | Numbers measured over time | Requests per second, memory usage |
+| **Traces** | The journey of a single request across all services, split into spans | A `/checkout` request goes through `orders`, then `payments`, then the database |
 
-## 3. أين يدخل ELK و OpenTelemetry؟
+## 3. Where ELK and OpenTelemetry fit
 
-- **OpenTelemetry (OTel):** معيار مفتوح ومجموعة أدوات لـ **جمع** الـ logs والـ metrics والـ traces من تطبيقك بطريقة موحدة.
-- **ELK:** مكان **تخزين** البيانات والبحث فيها وعرضها:
-  - **Elasticsearch**: قاعدة بيانات للبحث والتخزين.
-  - **Logstash**: يستقبل البيانات ويعالجها ويرسلها إلى Elasticsearch.
-  - **Kibana**: واجهة لعرض البيانات والبحث فيها وبناء dashboards.
+- **OpenTelemetry (OTel):** an open standard and set of tools for **collecting** logs, metrics, and traces from your application in a vendor-neutral way.
+- **ELK:** where the data is **stored, searched, and visualized**:
+  - **Elasticsearch**: the search and storage engine.
+  - **Logstash**: receives data, transforms it, and ships it to Elasticsearch.
+  - **Kibana**: the UI for searching data and building dashboards.
 
 ```
 NestJS app ──(logs/traces/metrics)──> OTel / Logstash ──> Elasticsearch ──> Kibana
 ```
 
-## 4. الكود: تجهيز المجلد على جهازك
+## 4. Code: set up the folder on your machine
 
 ```bash
 cd ~/developer/NodeJsStudioProjects
@@ -36,10 +36,10 @@ git clone https://github.com/Hassank455/elk-otel-learning.git
 cd elk-otel-learning
 ```
 
-تأكد من الأدوات:
+Check the tools:
 
 ```bash
-node -v            # 20 أو أحدث
+node -v            # 20 or newer
 docker -v
 docker compose version
 ```

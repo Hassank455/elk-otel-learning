@@ -1,37 +1,35 @@
 # elk-otel-learning
 
-رحلة تعلم خطوة بخطوة لـ **ELK Stack** (Elasticsearch, Logstash, Kibana) و **OpenTelemetry** باستخدام **NestJS** و **Docker**.
+Step-by-step learning journey for the **ELK Stack** (Elasticsearch, Logstash, Kibana) and **OpenTelemetry** with **NestJS** and **Docker**: logs, traces, and metrics.
 
-Step-by-step learning journey for the ELK Stack and OpenTelemetry with NestJS: logs, traces, metrics, and Docker.
+## How each step works
 
-## طريقة العمل في كل خطوة
+1. **Term**: what is the thing we are learning called?
+2. **Meaning**: what does it mean, and why do we need it?
+3. **Example**: a simple real-world or real-project example.
+4. **Code**: write the code, run it, and verify it works.
 
-1. **المصطلح**: ما اسم الشيء الذي نتعلمه؟
-2. **المعنى**: ماذا يعني ولماذا نحتاجه؟
-3. **المثال**: مثال بسيط من الحياة أو من مشروع حقيقي.
-4. **الكود**: نكتب الكود ونشغله ونتأكد أنه يعمل.
+Each stage has its own folder with a `docs/` subfolder for the lessons and the code next to it.
 
-كل خطوة لها ملف شرح داخل مجلد `docs/`، وكود داخل مجلد المرحلة.
+## Stages
 
-## المراحل
-
-| المرحلة | المجلد | الموضوع | الحالة |
+| Stage | Folder | Topic | Status |
 |---|---|---|---|
-| 0 | `docs/00-setup.md` | تجهيز المشروع ومفاهيم Observability الأساسية | ✅ |
-| 1 | `01-elk-logs/` | تشغيل ELK بـ Docker، وتطبيق NestJS يرسل structured logs، والبحث في Kibana وأول dashboard | 🚧 |
-| 2 | `02-opentelemetry/` | traces و spans و metrics و context propagation، و OTel SDK و OTel Collector و Elastic APM | ⏳ |
-| 3 | `03-full-observability/` | خدمتين NestJS، و distributed tracing، وربط الـ logs بالـ traces عن طريق trace_id، و alerts | ⏳ |
-| 4 | `04-advanced/` | sampling و index lifecycle وتجهيز الإعداد للـ production (اختياري) | ⏳ |
+| 0 | `docs/00-setup.md` | Project setup and core observability concepts | ✅ |
+| 1 | `01-elk-logs/` | Run ELK with Docker, a NestJS app sending structured logs, searching in Kibana, first dashboard | 🚧 |
+| 2 | `02-opentelemetry/` | Traces, spans, metrics, context propagation, OTel SDK, OTel Collector, Elastic APM | ⏳ |
+| 3 | `03-full-observability/` | Two NestJS services, distributed tracing, correlating logs and traces via trace_id, alerts | ⏳ |
+| 4 | `04-advanced/` | Sampling, index lifecycle management, production-ready setup (optional) | ⏳ |
 
-## المتطلبات
+## Requirements
 
 - Node.js 20+
-- Docker و Docker Compose
+- Docker and Docker Compose
 - NestJS CLI: `npm i -g @nestjs/cli`
 
-## سجل التعلم
+## Learning log
 
-| التاريخ | الخطوة | ملاحظات |
+| Date | Step | Notes |
 |---|---|---|
-| 2026-10-25 | المرحلة 0 | إنشاء الـ repo والخطة، والتأكد من Node v26 و Docker 29 |
-| 2026-10-25 | المرحلة 1، الدرس 1 | Elasticsearch: index و document والبحث |
+| 2026-10-25 | Stage 0 | Created the repo and plan; verified Node v26 and Docker 29 |
+| 2026-10-25 | Stage 1, lesson 1 | Elasticsearch: index, document, search |

@@ -3,9 +3,9 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION:-9.1.0}
     container_name: elasticsearch
     environment:
-      - discovery.type=single-node        # نود واحد فقط (للتعلم)
-      - xpack.security.enabled=false      # بدون كلمة سر (للتعلم فقط، لا تستخدمه في production)
-      - ES_JAVA_OPTS=-Xms1g -Xmx1g        # حجم الذاكرة المخصصة لـ Java
+      - discovery.type=single-node        # single node only (for learning)
+      - xpack.security.enabled=false      # no password (learning only, never in production)
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g        # JVM heap size
     ports:
       - "9200:9200"
     volumes:

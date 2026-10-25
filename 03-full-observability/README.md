@@ -1,3 +1,3 @@
 # 03-full-observability
 
-قريباً.
+Coming soon.
