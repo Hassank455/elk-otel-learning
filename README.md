@@ -18,7 +18,7 @@ Step-by-step learning journey for the ELK Stack and OpenTelemetry with NestJS: l
 | المرحلة | المجلد | الموضوع | الحالة |
 |---|---|---|---|
 | 0 | `docs/00-setup.md` | تجهيز المشروع ومفاهيم Observability الأساسية | ✅ |
-| 1 | `01-elk-logs/` | تشغيل ELK بـ Docker، وتطبيق NestJS يرسل structured logs، والبحث في Kibana وأول dashboard | ⏳ |
+| 1 | `01-elk-logs/` | تشغيل ELK بـ Docker، وتطبيق NestJS يرسل structured logs، والبحث في Kibana وأول dashboard | 🚧 |
 | 2 | `02-opentelemetry/` | traces و spans و metrics و context propagation، و OTel SDK و OTel Collector و Elastic APM | ⏳ |
 | 3 | `03-full-observability/` | خدمتين NestJS، و distributed tracing، وربط الـ logs بالـ traces عن طريق trace_id، و alerts | ⏳ |
 | 4 | `04-advanced/` | sampling و index lifecycle وتجهيز الإعداد للـ production (اختياري) | ⏳ |
@@ -33,4 +33,5 @@ Step-by-step learning journey for the ELK Stack and OpenTelemetry with NestJS: l
 
 | التاريخ | الخطوة | ملاحظات |
 |---|---|---|
-| 2026-10-25 | المرحلة 0 | إنشاء الـ repo والخطة |
+| 2026-10-25 | المرحلة 0 | إنشاء الـ repo والخطة، والتأكد من Node v26 و Docker 29 |
+| 2026-10-25 | المرحلة 1، الدرس 1 | Elasticsearch: index و document والبحث |
