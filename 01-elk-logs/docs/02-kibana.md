@@ -32,6 +32,8 @@ docker compose logs -f kibana   # wait for "Kibana is now available" (Ctrl+C to 
 
 Open http://localhost:5601
 
+The first time, Kibana shows a **Welcome to Elastic** screen. Click **Explore on my own**. You don't need **Add integrations**, because we will send the data ourselves.
+
 ### 2. Add sample logs with fresh timestamps
 
 Discover only shows data inside the time picker range, so let's add logs timestamped *now*. Open **Dev Tools** (menu ☰ > Management > Dev Tools) and run:
