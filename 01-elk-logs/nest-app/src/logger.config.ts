@@ -30,6 +30,8 @@ elasticStream.on('error', (err: Error) => {
 });
 
 export const loggerConfig: Params = {
+  // fields added with logger.assign() also go on the HTTP request log
+  assignResponse: true,
   pinoHttp: [
     {
       level: 'debug',
