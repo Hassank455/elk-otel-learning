@@ -8,6 +8,9 @@ const require = createRequire(import.meta.url);
 const pinoElastic: typeof import('pino-elasticsearch').default = require('pino-elasticsearch');
 
 const ELASTICSEARCH_URL = process.env.ELASTICSEARCH_URL ?? 'http://localhost:9200';
+const LOG_FILE = process.env.LOG_FILE ?? './logs/app.log';
+// Lesson 3: the app ships logs to Elasticsearch itself. Lesson 4: Logstash reads the log file instead.
+const LOG_TO_ELASTICSEARCH = process.env.LOG_TO_ELASTICSEARCH === 'true';
 
 // Stream 1: human-readable logs in the terminal
 const consoleStream = pretty({
@@ -17,17 +20,24 @@ const consoleStream = pretty({
   ignore: 'pid,hostname,req,res',
 });
 
-// Stream 2: JSON logs shipped to Elasticsearch in batches (Bulk API)
-const elasticStream = pinoElastic({
-  node: ELASTICSEARCH_URL,
-  index: 'nest-app-logs',
-  esVersion: 9,
-  flushInterval: 2000, // send a batch every 2 seconds (learning only, default is 30s)
-});
+// Stream 2: one JSON object per line in a file (Logstash tails this file, lesson 4)
+const fileStream = pino.destination({ dest: LOG_FILE, mkdir: true, sync: false });
 
-elasticStream.on('error', (err: Error) => {
-  console.error('Elasticsearch stream error:', err.message);
-});
+const streams: pino.StreamEntry[] = [{ stream: consoleStream }, { stream: fileStream }];
+
+// Stream 3 (optional): JSON logs shipped to Elasticsearch in batches (Bulk API, lesson 3)
+if (LOG_TO_ELASTICSEARCH) {
+  const elasticStream = pinoElastic({
+    node: ELASTICSEARCH_URL,
+    index: 'nest-app-logs',
+    esVersion: 9,
+    flushInterval: 2000, // send a batch every 2 seconds (learning only, default is 30s)
+  });
+  elasticStream.on('error', (err: Error) => {
+    console.error('Elasticsearch stream error:', err.message);
+  });
+  streams.push({ stream: elasticStream });
+}
 
 export const loggerConfig: Params = {
   // fields added with logger.assign() also go on the HTTP request log
@@ -56,6 +66,6 @@ export const loggerConfig: Params = {
         `${req.method} ${req.url} ${res.statusCode} ${Math.round(responseTime)}ms`,
       customErrorMessage: (req, res) => `${req.method} ${req.url} ${res.statusCode}`,
     },
-    pino.multistream([{ stream: consoleStream }, { stream: elasticStream }]),
+    pino.multistream(streams),
   ],
 };

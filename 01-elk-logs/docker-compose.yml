@@ -26,5 +26,21 @@ services:
       elasticsearch:
         condition: service_healthy                      # wait until Elasticsearch is ready
 
+  logstash:
+    image: docker.elastic.co/logstash/logstash:${ELK_VERSION:-9.1.0}
+    container_name: logstash
+    environment:
+      - LS_JAVA_OPTS=-Xms512m -Xmx512m
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro   # our pipeline config
+      - ./nest-app/logs:/var/log/nest-app:ro                  # the app's log files
+      - ls-data:/usr/share/logstash/data                      # sincedb + queue survive restarts
+    ports:
+      - "9600:9600"                                           # Logstash monitoring API
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
 volumes:
   es-data:
+  ls-data:

@@ -18,3 +18,4 @@ npm-debug.log*
 # Docker volumes (local data)
 data/
 *.tsbuildinfo
+logs/

@@ -112,8 +112,10 @@ docker compose up -d
 ```bash
 cd nest-app
 npm install
-npm run start:dev
+LOG_TO_ELASTICSEARCH=true npm run start:dev
 ```
+
+> **Note:** since lesson 4, the app ships logs through Logstash by default. `LOG_TO_ELASTICSEARCH=true` turns on the direct shipping used in this lesson.
 
 You'll see colored logs in the terminal, ending with `Nest application successfully started`.
 

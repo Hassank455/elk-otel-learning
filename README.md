@@ -35,3 +35,5 @@ Each stage has its own folder with a `docs/` subfolder for the lessons and the c
 | 2026-10-25 | Stage 1, lesson 1 | Elasticsearch: index, document, search; exercise done ✅ |
 | 2026-10-25 | Stage 1, lesson 2 | Kibana: data view, Discover, KQL, Dev Tools ✅ |
 | 2026-10-25 | Stage 1, lesson 3 | NestJS + pino structured logs shipped to Elasticsearch |
+| 2026-10-26 | Stage 1, lesson 3 exercises | DELETE endpoint (Hassan), currency field, `assign()` for request-scoped fields ✅ |
+| 2026-10-26 | Stage 1, lesson 4 | Logstash: file input, filters, decoupling the app from Elasticsearch |

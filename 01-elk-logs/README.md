@@ -4,6 +4,6 @@
 |---|---|---|
 | 1. Elasticsearch | [docs/01-elasticsearch.md](docs/01-elasticsearch.md) | ✅ |
 | 2. Kibana | [docs/02-kibana.md](docs/02-kibana.md) | ✅ |
-| 3. NestJS app sending structured logs | [docs/03-nestjs-structured-logs.md](docs/03-nestjs-structured-logs.md) · [nest-app/](nest-app) | 🚧 |
-| 4. Logstash | coming soon | |
+| 3. NestJS app sending structured logs | [docs/03-nestjs-structured-logs.md](docs/03-nestjs-structured-logs.md) · [nest-app/](nest-app) | ✅ |
+| 4. Logstash | [docs/04-logstash.md](docs/04-logstash.md) | 🚧 |
 | 5. Searching in Kibana and a first dashboard | coming soon | |
