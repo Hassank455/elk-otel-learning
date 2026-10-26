@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PinoLogger, InjectPinoLogger } from 'nestjs-pino';
+import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 
 export interface CreateOrderDto {
   userId: number;
@@ -26,10 +26,17 @@ export class OrdersService {
     const orderId = this.nextId++;
 
     // Structured log: first argument = fields (searchable in Kibana), second = message
-    this.logger.info({ orderId, userId: dto.userId, product: dto.product }, 'order created');
+    this.logger.info(
+      { orderId, userId: dto.userId, product: dto.product },
+      'order created',
+    );
 
     const paid = await this.processPayment(orderId, dto.amount);
-    const order: Order = { id: orderId, ...dto, status: paid ? 'paid' : 'payment_failed' };
+    const order: Order = {
+      id: orderId,
+      ...dto,
+      status: paid ? 'paid' : 'payment_failed',
+    };
     this.orders.push(order);
     return order;
   }
@@ -40,13 +47,30 @@ export class OrdersService {
     return order;
   }
 
+  remove(id: number): boolean {
+    const index = this.orders.findIndex((o) => o.id === id);
+    if (index === -1) {
+      this.logger.warn({ orderId: id }, 'order not found');
+      return false;
+    }
+    this.orders.splice(index, 1);
+    this.logger.info({ orderId: id }, 'order cancelled');
+    return true;
+  }
+
   // Fake payment gateway: random duration, fails ~30% of the time
-  private async processPayment(orderId: number, amount: number): Promise<boolean> {
+  private async processPayment(
+    orderId: number,
+    amount: number,
+  ): Promise<boolean> {
     const durationMs = Math.round(100 + Math.random() * 1500);
     await new Promise((resolve) => setTimeout(resolve, durationMs));
 
     if (Math.random() < 0.3) {
-      this.logger.error({ orderId, amount, durationMs }, 'payment failed: card declined');
+      this.logger.error(
+        { orderId, amount, durationMs },
+        'payment failed: card declined',
+      );
       return false;
     }
     this.logger.info({ orderId, amount, durationMs }, 'payment succeeded');

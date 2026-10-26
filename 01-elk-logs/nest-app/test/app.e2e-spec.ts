@@ -28,6 +28,16 @@ describe('OrdersController (e2e)', () => {
     return request(app.getHttpServer()).get('/orders/999').expect(404);
   });
 
+  it('DELETE /orders/:id cancels an order, then returns 404', async () => {
+    const server = app.getHttpServer();
+    const { body } = await request(server)
+      .post('/orders')
+      .send({ userId: 1, product: 'book', amount: 20 })
+      .expect(201);
+    await request(server).delete(`/orders/${body.id}`).expect(200);
+    await request(server).delete(`/orders/${body.id}`).expect(404);
+  });
+
   afterEach(async () => {
     await app.close();
   });
