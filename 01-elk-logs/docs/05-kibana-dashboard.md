@@ -19,7 +19,7 @@ Until now you had to **ask** Kibana every question ("show me errors"). A dashboa
 
 When Elasticsearch sees a new string field, it maps it **twice**:
 
-```json
+```jsonc
 "product": {
   "type": "text",                                       // "gaming laptop" -> ["gaming", "laptop"]
   "fields": { "keyword": { "type": "keyword" } }        // "gaming laptop" as one exact value
