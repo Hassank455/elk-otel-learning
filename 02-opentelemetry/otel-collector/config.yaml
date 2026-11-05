@@ -1,0 +1,27 @@
+# OpenTelemetry Collector: receivers -> processors -> exporters (same idea as Logstash's input -> filter -> output)
+
+receivers:
+  otlp:                        # OTLP = the OpenTelemetry protocol
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318 # our NestJS app sends here (http://localhost:4318/v1/traces)
+
+processors:
+  batch: {}                    # group spans into batches before sending (fewer, bigger requests)
+
+exporters:
+  debug:                       # print received spans in the collector logs (learning/debugging)
+    verbosity: normal
+  otlphttp/apm:                # forward to Elastic APM Server, which also speaks OTLP
+    endpoint: http://apm-server:8200
+    tls:
+      insecure: true
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug, otlphttp/apm]

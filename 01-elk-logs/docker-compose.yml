@@ -20,6 +20,7 @@ services:
     container_name: kibana
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200   # service name, not localhost
+      - XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY=learning-only-key-32-characters!!   # needed by the APM app (Stage 2)
     ports:
       - "5601:5601"
     depends_on:

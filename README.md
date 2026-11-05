@@ -17,7 +17,7 @@ Each stage has its own folder with a `docs/` subfolder for the lessons and the c
 |---|---|---|---|
 | 0 | `docs/00-setup.md` | Project setup and core observability concepts | ✅ |
 | 1 | `01-elk-logs/` | Run ELK with Docker, a NestJS app sending structured logs, searching in Kibana, first dashboard | ✅ |
-| 2 | `02-opentelemetry/` | Traces, spans, metrics, context propagation, OTel SDK, OTel Collector, Elastic APM | ⏳ |
+| 2 | `02-opentelemetry/` | Traces, spans, metrics, context propagation, OTel SDK, OTel Collector, Elastic APM | 🚧 |
 | 3 | `03-full-observability/` | Two NestJS services, distributed tracing, correlating logs and traces via trace_id, alerts | ⏳ |
 | 4 | `04-advanced/` | Sampling, index lifecycle management, production-ready setup (optional) | ⏳ |
 
@@ -38,3 +38,4 @@ Each stage has its own folder with a `docs/` subfolder for the lessons and the c
 | 2026-10-26 | Stage 1, lesson 3 exercises | DELETE endpoint (Hassan), currency field, `assign()` for request-scoped fields ✅ |
 | 2026-10-26 | Stage 1, lesson 4 | Logstash: file input, filters, decoupling the app from Elasticsearch ✅ |
 | 2026-11-05 | Stage 1, lesson 5 | Aggregations, text vs keyword, percentiles; built the "Orders API health" dashboard (7 panels) ✅ |
+| 2026-11-05 | Stage 2, lesson 1 | Traces and spans: OTel SDK auto-instrumentation, Collector, APM Server |

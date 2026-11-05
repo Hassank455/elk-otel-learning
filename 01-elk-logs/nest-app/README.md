@@ -7,6 +7,7 @@ See the lesson: [../docs/03-nestjs-structured-logs.md](../docs/03-nestjs-structu
 ```bash
 npm install
 npm run start:dev                 # app on http://localhost:3000
+npm run start:dev:otel            # same, with OpenTelemetry tracing (Stage 2)
 ./scripts/generate-traffic.sh 20  # send 20 random orders
 ```
 
@@ -23,3 +24,4 @@ Logs go to the terminal and to `logs/app.log` (read by Logstash, lesson 4).
 | `LOG_FILE` | `./logs/app.log` | JSON log file |
 | `LOG_TO_ELASTICSEARCH` | `false` | `true` = also ship logs directly to Elasticsearch (lesson 3) |
 | `ELASTICSEARCH_URL` | `http://localhost:9200` | Used when `LOG_TO_ELASTICSEARCH=true` |
+| `OTEL_EXPORTER_OTLP_TRACES_ENDPOINT` | `http://localhost:4318/v1/traces` | Where spans are sent (the OTel Collector, Stage 2) |

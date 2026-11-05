@@ -1,0 +1,36 @@
+# Stage 2 = everything from Stage 1 (Elasticsearch, Kibana, Logstash) + OTel Collector + APM Server
+# Same project name as Stage 1, so the same containers and volumes are reused
+# (your logs AND your Kibana dashboard are stored in the Elasticsearch volume).
+name: 01-elk-logs
+
+include:
+  - ../01-elk-logs/docker-compose.yml
+
+services:
+  apm-server:
+    image: docker.elastic.co/apm/apm-server:${ELK_VERSION:-9.1.0}
+    container_name: apm-server
+    command:
+      - -e                                              # log to stderr (docker compose logs)
+      - --strict.perms=false
+      - -E
+      - apm-server.host=0.0.0.0:8200
+      - -E
+      - output.elasticsearch.hosts=["http://elasticsearch:9200"]
+    ports:
+      - "8200:8200"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:0.160.0
+    container_name: otel-collector
+    command: ["--config=/etc/otelcol/config.yaml"]
+    volumes:
+      - ./otel-collector/config.yaml:/etc/otelcol/config.yaml:ro
+    ports:
+      - "4317:4317"   # OTLP gRPC
+      - "4318:4318"   # OTLP HTTP (our app uses this one)
+    depends_on:
+      - apm-server
