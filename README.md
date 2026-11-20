@@ -38,4 +38,5 @@ Each stage has its own folder with a `docs/` subfolder for the lessons and the c
 | 2026-10-26 | Stage 1, lesson 3 exercises | DELETE endpoint (Hassan), currency field, `assign()` for request-scoped fields ✅ |
 | 2026-10-26 | Stage 1, lesson 4 | Logstash: file input, filters, decoupling the app from Elasticsearch ✅ |
 | 2026-11-05 | Stage 1, lesson 5 | Aggregations, text vs keyword, percentiles; built the "Orders API health" dashboard (7 panels) ✅ |
-| 2026-11-05 | Stage 2, lesson 1 | Traces and spans: OTel SDK auto-instrumentation, Collector, APM Server |
+| 2026-11-05 | Stage 2, lesson 1 | Traces and spans: OTel SDK auto-instrumentation, Collector, APM Server ✅ |
+| 2026-11-20 | Stage 2, lesson 2 | Manual spans: orders.create, payment.process, orders.save; attributes, events, status |
