@@ -25,3 +25,8 @@ service:
       receivers: [otlp]
       processors: [batch]
       exporters: [debug, otlphttp/apm]
+    # Stage 2, lesson 4: a second pipeline for metrics (same receiver and exporters)
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug, otlphttp/apm]

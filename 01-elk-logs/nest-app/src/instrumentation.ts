@@ -5,6 +5,8 @@ import { NodeSDK } from '@opentelemetry/sdk-node';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
 import { ExpressLayerType } from '@opentelemetry/instrumentation-express';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-proto';
+import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-proto';
+import { AggregationTemporality, PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 
@@ -12,9 +14,10 @@ import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic
 // patch libraries like express and @nestjs/core when they are imported.
 register('@opentelemetry/instrumentation/hook.mjs', import.meta.url);
 
-// This lesson is about traces only. Logs still go through Logstash (Stage 1), metrics come later.
+// Logs still go through Logstash (Stage 1), so don't send them over OTLP too.
 process.env.OTEL_LOGS_EXPORTER ??= 'none';
-process.env.OTEL_METRICS_EXPORTER ??= 'none';
+
+const otlpBase = process.env.OTEL_EXPORTER_OTLP_ENDPOINT ?? 'http://localhost:4318';
 
 const sdk = new NodeSDK({
   // Resource: who is sending this telemetry
@@ -25,8 +28,21 @@ const sdk = new NodeSDK({
   }),
   // Exporter: where spans go (the OTel Collector, OTLP over HTTP on port 4318)
   traceExporter: new OTLPTraceExporter({
-    url: process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT ?? 'http://localhost:4318/v1/traces',
+    url: process.env.OTEL_EXPORTER_OTLP_TRACES_ENDPOINT ?? `${otlpBase}/v1/traces`,
   }),
+  // Stage 2, lesson 4: metrics. A reader collects all metrics every 10 seconds
+  // and hands them to the exporter (same Collector, path /v1/metrics).
+  metricReaders: [
+    new PeriodicExportingMetricReader({
+      exporter: new OTLPMetricExporter({
+        url: process.env.OTEL_EXPORTER_OTLP_METRICS_ENDPOINT ?? `${otlpBase}/v1/metrics`,
+        // DELTA: each export sends "what happened in the last 10s", not the running total.
+        // This is what Elastic recommends for OTel metrics.
+        temporalityPreference: AggregationTemporality.DELTA,
+      }),
+      exportIntervalMillis: 10_000,
+    }),
+  ],
   // Instrumentations: create spans automatically for HTTP, Express, NestJS, ...
   instrumentations: [
     getNodeAutoInstrumentations({

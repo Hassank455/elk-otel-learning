@@ -1,9 +1,30 @@
 import { Injectable } from '@nestjs/common';
-import { SpanStatusCode, trace } from '@opentelemetry/api';
+import { metrics, SpanStatusCode, trace } from '@opentelemetry/api';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 
 // A tracer creates spans. The name says which part of the code they come from.
 const tracer = trace.getTracer('orders-api');
+
+// A meter creates metric instruments (counters, histograms, gauges).
+// Stage 2, lesson 4.
+const meter = metrics.getMeter('orders-api');
+
+// Counter: a number that only goes up. "How many orders were created?"
+const ordersCreated = meter.createCounter('orders.created', {
+  description: 'Number of orders created',
+  unit: '{order}',
+});
+
+// Histogram: records many values so we can ask for avg, p95, max...
+// "How long does a payment take?"
+const paymentDuration = meter.createHistogram('payment.duration', {
+  description: 'How long the payment gateway took',
+  unit: 'ms',
+  advice: {
+    // bucket edges in ms: <=100, <=250, <=500, ... (our fake payments take 100-1600ms)
+    explicitBucketBoundaries: [100, 250, 500, 750, 1000, 1500, 2000],
+  },
+});
 
 export interface CreateOrderDto {
   userId: number;
@@ -25,7 +46,16 @@ export class OrdersService {
   constructor(
     @InjectPinoLogger(OrdersService.name)
     private readonly logger: PinoLogger,
-  ) {}
+  ) {
+    // Observable gauge: a value we READ when metrics are collected (every 10s),
+    // instead of recording it ourselves. "How many orders are stored right now?"
+    meter
+      .createObservableGauge('orders.stored', {
+        description: 'Orders currently kept in memory',
+        unit: '{order}',
+      })
+      .addCallback((result) => result.observe(this.orders.length));
+  }
 
   async create(dto: CreateOrderDto): Promise<Order> {
     // Manual span: wraps the whole "create order" business logic.
@@ -64,6 +94,12 @@ export class OrdersService {
         await this.save(order);
 
         span.setAttribute('order.status', order.status);
+
+        // +1 order, split by status and product (attributes = dimensions)
+        ordersCreated.add(1, {
+          'order.status': order.status,
+          'order.product': dto.product,
+        });
         return order;
       } finally {
         span.end(); // a span is only sent when it ends: never forget this
@@ -102,8 +138,14 @@ export class OrdersService {
 
         const durationMs = Math.round(100 + Math.random() * 1500);
         await new Promise((resolve) => setTimeout(resolve, durationMs));
+        const declined = Math.random() < 0.3;
 
-        if (Math.random() < 0.3) {
+        // one value per payment, tagged with the outcome
+        paymentDuration.record(durationMs, {
+          'payment.outcome': declined ? 'declined' : 'success',
+        });
+
+        if (declined) {
           // Status ERROR marks the span as failed; an exception records what went wrong
           span.recordException(new Error('card declined'));
           span.setStatus({
