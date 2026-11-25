@@ -17,8 +17,8 @@ Each stage has its own folder with a `docs/` subfolder for the lessons and the c
 |---|---|---|---|
 | 0 | `docs/00-setup.md` | Project setup and core observability concepts | ✅ |
 | 1 | `01-elk-logs/` | Run ELK with Docker, a NestJS app sending structured logs, searching in Kibana, first dashboard | ✅ |
-| 2 | `02-opentelemetry/` | Traces, spans, metrics, context propagation, OTel SDK, OTel Collector, Elastic APM | 🚧 |
-| 3 | `03-full-observability/` | Two NestJS services, distributed tracing, correlating logs and traces via trace_id, alerts | ⏳ |
+| 2 | `02-opentelemetry/` | Traces, spans, metrics, context propagation, OTel SDK, OTel Collector, Elastic APM | ✅ |
+| 3 | `03-distributed/` | Two NestJS services, distributed tracing, alerts, logging to stdout | 🚧 |
 | 4 | `04-advanced/` | Sampling, index lifecycle management, production-ready setup (optional) | ⏳ |
 
 ## Requirements
@@ -41,4 +41,5 @@ Each stage has its own folder with a `docs/` subfolder for the lessons and the c
 | 2026-11-05 | Stage 2, lesson 1 | Traces and spans: OTel SDK auto-instrumentation, Collector, APM Server ✅ |
 | 2026-11-20 | Stage 2, lesson 2 | Manual spans: orders.create, payment.process, orders.save; attributes, events, status ✅ |
 | 2026-11-21 | Stage 2, lesson 3 | Correlating logs and traces: `trace.id` (ECS) via Logstash, `x-trace-id` header, APM Logs tab ✅ |
-| 2026-11-22 | Stage 2, lesson 4 | Metrics: counter, histogram, observable gauge, delta temporality, Collector metrics pipeline |
+| 2026-11-22 | Stage 2, lesson 4 | Metrics: counter, histogram, observable gauge, delta temporality, Collector metrics pipeline; built the "Orders API metrics" dashboard ✅ |
+| 2026-11-25 | Stage 3, lesson 1 | Distributed tracing: `payments-api` service, `traceparent` propagation, service map |

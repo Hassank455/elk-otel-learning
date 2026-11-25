@@ -63,5 +63,6 @@ const sdk = new NodeSDK({
 sdk.start();
 
 // Flush the last spans when the app stops (Ctrl+C)
-process.on('SIGTERM', () => void sdk.shutdown());
+// Our handler replaces Node's default "exit on signal", so we must exit ourselves
+process.on('SIGTERM', () => void sdk.shutdown().finally(() => process.exit(0)));
 process.on('SIGINT', () => void sdk.shutdown().finally(() => process.exit(0)));

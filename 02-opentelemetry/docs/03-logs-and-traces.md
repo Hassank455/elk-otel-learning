@@ -239,5 +239,5 @@ The direct index skips Logstash, so nothing renames the field. That's another re
 1. **Follow one failure end to end.** Make traffic until a payment fails. Start in Discover with `level: "error"`, copy `trace.id`, and find the same request in APM. Which span is red? How long did it take?
 2. **Read `span.id`.** For one trace, list its log lines in Discover with the `span.id` column. Match each `span.id` to a span in the APM waterfall (click a span to see its id). Which log belongs to `payment.process`?
 3. **Use the header.** Send a request with `curl -i`, copy `x-trace-id`, and find both the trace and the logs using only that value.
-4. **Add a log inside `orders.save`.** Add `this.logger.debug({ orderId: order.id }, 'saving order')` inside the `orders.save` span. Restart, send a request, and check: does the new log have the `span.id` of `orders.save`?
+4. **Add a log inside `orders.save`.** Add `this.logger.info({ orderId: order.id }, 'saving order')` inside the `orders.save` span. Restart, send a request, and check: does the new log have the `span.id` of `orders.save`?
 5. **(Thinking)** Why does the `x-trace-id` header **not** appear when you run `npm run start:dev` (without OTel)? What would you change if you wanted a request id even without OTel?

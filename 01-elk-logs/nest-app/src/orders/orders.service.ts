@@ -5,6 +5,9 @@ import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 // A tracer creates spans. The name says which part of the code they come from.
 const tracer = trace.getTracer('orders-api');
 
+// Stage 3: where payments-api runs, e.g. http://localhost:3001 (unset = fake gateway)
+const PAYMENTS_API_URL = process.env.PAYMENTS_API_URL;
+
 // A meter creates metric instruments (counters, histograms, gauges).
 // Stage 2, lesson 4.
 const meter = metrics.getMeter('orders-api');
@@ -84,7 +87,7 @@ export class OrdersService {
         // Structured log: first argument = fields (searchable in Kibana), second = message
         this.logger.info('order created');
 
-        const paid = await this.processPayment(dto.amount, currency);
+        const paid = await this.processPayment(orderId, dto.amount, currency);
         const order: Order = {
           id: orderId,
           ...dto,
@@ -124,21 +127,25 @@ export class OrdersService {
     return true;
   }
 
-  // Fake payment gateway: random duration, fails ~30% of the time
+  // Stage 3: if PAYMENTS_API_URL is set, payments are done by a separate service
+  // (payments-api). Otherwise we use the fake in-process gateway from Stage 2.
   private async processPayment(
+    orderId: number,
     amount: number,
     currency: string,
   ): Promise<boolean> {
     return tracer.startActiveSpan('payment.process', async (span) => {
+      const started = performance.now();
       try {
         span.setAttributes({
           'payment.amount': amount,
           'payment.currency': currency,
         });
 
-        const durationMs = Math.round(100 + Math.random() * 1500);
-        await new Promise((resolve) => setTimeout(resolve, durationMs));
-        const declined = Math.random() < 0.3;
+        const declined = PAYMENTS_API_URL
+          ? await this.callPaymentsApi(orderId, amount, currency)
+          : await this.fakeGateway();
+        const durationMs = Math.round(performance.now() - started);
 
         // one value per payment, tagged with the outcome
         paymentDuration.record(durationMs, {
@@ -167,6 +174,32 @@ export class OrdersService {
         span.end();
       }
     });
+  }
+
+  // Stage 2: random duration, declines ~30% of the time. Returns true if declined.
+  private async fakeGateway(): Promise<boolean> {
+    await new Promise((resolve) =>
+      setTimeout(resolve, 100 + Math.random() * 1500),
+    );
+    return Math.random() < 0.3;
+  }
+
+  // Stage 3: a real HTTP call to payments-api. Returns true if declined.
+  // We do NOTHING special for tracing here: the undici (fetch) instrumentation
+  // creates a client span and adds the "traceparent" header for us.
+  private async callPaymentsApi(
+    orderId: number,
+    amount: number,
+    currency: string,
+  ): Promise<boolean> {
+    const res = await fetch(`${PAYMENTS_API_URL}/payments`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ orderId, amount, currency }),
+    });
+    if (res.status === 402) return true; // Payment Required = declined
+    if (!res.ok) throw new Error(`payments-api returned ${res.status}`);
+    return false;
   }
 
   // Fake database write: 20-80ms
