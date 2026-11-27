@@ -17,6 +17,12 @@ export interface PaymentResult {
   reason?: string;
 }
 
+// Stage 3, lesson 2: knobs to make the "bank" misbehave, so we can trigger alerts.
+// DECLINE_RATE=0.9  -> 90% of payments are declined (default 0.3)
+// EXTRA_DELAY_MS=2000 -> every payment takes 2s longer (default 0)
+const DECLINE_RATE = Number(process.env.DECLINE_RATE ?? 0.3);
+const EXTRA_DELAY_MS = Number(process.env.EXTRA_DELAY_MS ?? 0);
+
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 @Injectable()
@@ -48,10 +54,12 @@ export class PaymentsService {
           await this.fraudCheck(dto.amount);
 
           // the "bank": 100-1500ms, declines ~30% of the time
-          const durationMs = Math.round(100 + Math.random() * 1400);
+          const durationMs = Math.round(
+            100 + Math.random() * 1400 + EXTRA_DELAY_MS,
+          );
           await sleep(durationMs);
 
-          if (Math.random() < 0.3) {
+          if (Math.random() < DECLINE_RATE) {
             span.recordException(new Error('card declined'));
             span.setStatus({
               code: SpanStatusCode.ERROR,

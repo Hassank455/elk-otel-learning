@@ -42,4 +42,5 @@ Each stage has its own folder with a `docs/` subfolder for the lessons and the c
 | 2026-11-20 | Stage 2, lesson 2 | Manual spans: orders.create, payment.process, orders.save; attributes, events, status ✅ |
 | 2026-11-21 | Stage 2, lesson 3 | Correlating logs and traces: `trace.id` (ECS) via Logstash, `x-trace-id` header, APM Logs tab ✅ |
 | 2026-11-22 | Stage 2, lesson 4 | Metrics: counter, histogram, observable gauge, delta temporality, Collector metrics pipeline; built the "Orders API metrics" dashboard ✅ |
-| 2026-11-25 | Stage 3, lesson 1 | Distributed tracing: `payments-api` service, `traceparent` propagation, service map |
+| 2026-11-25 | Stage 3, lesson 1 | Distributed tracing: `payments-api` service, `traceparent` propagation, service map ✅ |
+| 2026-11-27 | Stage 3, lesson 2 | Alerts: Elasticsearch query rule (logs), APM latency rule (traces), connectors, fault injection |
